@@ -636,7 +636,23 @@ extension EKContentView {
                 let velocity = gr.velocity(in: superview!).y
                 swipeEnded(withVelocity: velocity)
             case .changed:
-                inConstraint.constant += translation
+                if attributes.position.isBottom {
+                    let constant: CGFloat = inConstraint.constant + translation
+                    if constant <= self.inOffset {
+                        inConstraint.constant = self.inOffset
+                    } else {
+                        inConstraint.constant = constant
+                    }
+                } else if attributes.position.isTop {
+                    let constant: CGFloat = inConstraint.constant + translation
+                    if constant >= self.inOffset {
+                        inConstraint.constant = self.inOffset
+                    } else {
+                        inConstraint.constant = constant
+                    }
+                } else {
+                    inConstraint.constant += translation
+                }
             default:
                 break
             }
